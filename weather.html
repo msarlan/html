@@ -1,452 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Weather Dashboard</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Multi Camera Viewer</title>
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
         body {
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
-            color: white;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        header {
-            text-align: center;
-            padding: 20px 0;
-            margin-bottom: 30px;
-        }
-        
-        h1 {
-            font-size: 2.8rem;
-            margin-bottom: 10px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
-        
-        .search-container {
+            margin: 0;
+            background: #000;
             display: flex;
-            max-width: 600px;
-            margin: 0 auto 30px;
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 50px;
-            backdrop-filter: blur(10px);
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-        
-        .search-container input {
-            flex: 1;
-            padding: 15px 25px;
-            background: transparent;
-            border: none;
-            color: white;
-            font-size: 1.1rem;
-            outline: none;
-        }
-        
-        .search-container input::placeholder {
-            color: rgba(255, 255, 255, 0.8);
-        }
-        
-        .search-container button {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            padding: 0 25px;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .search-container button:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-        
-        .dashboard {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            margin-bottom: 40px;
-        }
-        
-        .card {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 25px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3);
-        }
-        
-        .current-weather {
-            text-align: center;
-        }
-        
-        .location {
-            font-size: 1.8rem;
-            margin-bottom: 10px;
-        }
-        
-        .date {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            margin-bottom: 20px;
-        }
-        
-        .temperature {
-            font-size: 4rem;
-            font-weight: 700;
-            margin: 15px 0;
-        }
-        
-        .weather-icon {
-            font-size: 5rem;
-            margin: 15px 0;
-        }
-        
-        .weather-details {
-            display: flex;
-            justify-content: space-around;
             flex-wrap: wrap;
-            margin-top: 20px;
-            gap: 15px;
-        }
-        
-        .detail {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        
-        .detail i {
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
-        
-        .detail .value {
-            font-size: 1.3rem;
-            font-weight: 600;
-        }
-        
-        .detail .label {
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
-        
-        .forecast {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-top: 30px;
-        }
-        
-        .forecast-day {
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 15px;
-            padding: 15px;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-        
-        .forecast-day:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.05);
-        }
-        
-        .forecast-date {
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-        
-        .forecast-icon {
-            font-size: 2.5rem;
-            margin: 10px 0;
-        }
-        
-        .forecast-temp {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin: 5px 0;
-        }
-        
-        .controls {
-            display: flex;
             justify-content: center;
-            gap: 15px;
-            margin: 30px 0;
-        }
-        
-        .btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            padding: 12px 25px;
-            border-radius: 50px;
-            color: white;
-            font-size: 1rem;
-            cursor: pointer;
-            display: flex;
             align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-        }
-        
-        .btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: scale(1.05);
-        }
-        
-        .btn:active {
-            transform: scale(0.95);
-        }
-        
-        .zoom-controls {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            display: flex;
-            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
             gap: 10px;
-            z-index: 100;
         }
-        
-        .zoom-btn {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid rgba(255, 255, 255, 0.5);
+
+        .cam-container {
+            flex: 1 1 calc(33% - 20px);
+            /* 2 cameras per row */
+            max-width: calc(33% - 20px);
             display: flex;
-            align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
-            cursor: pointer;
-            backdrop-filter: blur(5px);
-            transition: all 0.3s ease;
+            align-items: center;
         }
-        
-        .zoom-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: scale(1.1);
+
+        img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            border: 2px solid #333;
+            border-radius: 4px;
         }
-        
-        .zoom-btn:active {
-            transform: scale(0.9);
+
+        @media (max-width: 900px) {
+            .cam-container {
+                flex: 1 1 90%;
+                max-width: 100%;
+            }
         }
-        
-        footer {
-            text-align: center;
-            padding: 20px;
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-        
-        @media (max-width: 768px) {
-            .dashboard {
-                grid-template-columns: 1fr;
-            }
-            
-            h1 {
-                font-size: 2.2rem;
-            }
-            
-            .search-container {
-                flex-direction: column;
-                border-radius: 15px;
-                background: rgba(255, 255, 255, 0.15);
-            }
-            
-            .search-container input {
-                border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-            }
+
+        iframe {
+            margin-top: 130;
         }
     </style>
-</head>
-<body>
-    <div class="container">
-        <header>
-            <h1><i class="fas fa-cloud-sun"></i> Interactive Weather Dashboard</h1>
-            <p>Real-time weather information with interactive features</p>
-        </header>
-        
-        <div class="search-container">
-            <input type="text" id="search-input" placeholder="Search for a city...">
-            <button id="search-btn"><i class="fas fa-search"></i> Search</button>
-        </div>
-        
-        <div class="dashboard">
-            <div class="card current-weather">
-                <div class="location">New York, NY</div>
-                <div class="date">Monday, June 12, 2023</div>
-                <div class="weather-icon">
-                    <i class="fas fa-sun"></i>
-                </div>
-                <div class="temperature">24°C</div>
-                <div class="weather-details">
-                    <div class="detail">
-                        <i class="fas fa-wind"></i>
-                        <div class="value">12 km/h</div>
-                        <div class="label">Wind</div>
-                    </div>
-                    <div class="detail">
-                        <i class="fas fa-tint"></i>
-                        <div class="value">65%</div>
-                        <div class="label">Humidity</div>
-                    </div>
-                    <div class="detail">
-                        <i class="fas fa-compress"></i>
-                        <div class="value">1013 hPa</div>
-                        <div class="label">Pressure</div>
-                    </div>
-                    <div class="detail">
-                        <i class="fas fa-eye"></i>
-                        <div class="value">10 km</div>
-                        <div class="label">Visibility</div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="card">
-                <h2>5-Day Forecast</h2>
-                <div class="forecast">
-                    <div class="forecast-day">
-                        <div class="forecast-date">Tue</div>
-                        <div class="forecast-icon"><i class="fas fa-cloud-sun"></i></div>
-                        <div class="forecast-temp">22°C</div>
-                    </div>
-                    <div class="forecast-day">
-                        <div class="forecast-date">Wed</div>
-                        <div class="forecast-icon"><i class="fas fa-cloud"></i></div>
-                        <div class="forecast-temp">19°C</div>
-                    </div>
-                    <div class="forecast-day">
-                        <div class="forecast-date">Thu</div>
-                        <div class="forecast-icon"><i class="fas fa-cloud-showers-heavy"></i></div>
-                        <div class="forecast-temp">18°C</div>
-                    </div>
-                    <div class="forecast-day">
-                        <div class="forecast-date">Fri</div>
-                        <div class="forecast-icon"><i class="fas fa-cloud-sun"></i></div>
-                        <div class="forecast-temp">24°C</div>
-                    </div>
-                    <div class="forecast-day">
-                        <div class="forecast-date">Sat</div>
-                        <div class="forecast-icon"><i class="fas fa-sun"></i></div>
-                        <div class="forecast-temp">26°C</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="controls">
-            <button class="btn" id="refresh-btn">
-                <i class="fas fa-sync-alt"></i> Refresh Data
-            </button>
-            <button class="btn" id="location-btn">
-                <i class="fas fa-location-arrow"></i> Use My Location
-            </button>
-        </div>
-        
-        <div class="zoom-controls">
-            <div class="zoom-btn" id="zoom-in">
-                <i class="fas fa-search-plus"></i>
-            </div>
-            <div class="zoom-btn" id="zoom-out">
-                <i class="fas fa-search-minus"></i>
-            </div>
-            <div class="zoom-btn" id="reset-zoom">
-                <i class="fas fa-expand"></i>
-            </div>
-        </div>
-        
-        <footer>
-            <p>Interactive Weather Dashboard &copy; 2023 | Real-time weather information</p>
-        </footer>
-    </div>
 
     <script>
-        // Zoom functionality
-        let zoomLevel = 1;
-        const zoomContainer = document.querySelector('.container');
-        
-        document.getElementById('zoom-in').addEventListener('click', () => {
-            if (zoomLevel < 1.5) {
-                zoomLevel += 0.1;
-                zoomContainer.style.transform = `scale(${zoomLevel})`;
-                zoomContainer.style.transformOrigin = 'top center';
-            }
-        });
-        
-        document.getElementById('zoom-out').addEventListener('click', () => {
-            if (zoomLevel > 0.7) {
-                zoomLevel -= 0.1;
-                zoomContainer.style.transform = `scale(${zoomLevel})`;
-            }
-        });
-        
-        document.getElementById('reset-zoom').addEventListener('click', () => {
-            zoomLevel = 1;
-            zoomContainer.style.transform = `scale(${zoomLevel})`;
-        });
-        
-        // Simulate search functionality
-        document.getElementById('search-btn').addEventListener('click', () => {
-            const location = document.getElementById('search-input').value;
-            if (location.trim() !== '') {
-                alert(`Searching for weather in: ${location}`);
-                // In a real app, this would call a weather API
-                document.querySelector('.location').textContent = location;
-            }
-        });
-        
-        // Refresh button functionality
-        document.getElementById('refresh-btn').addEventListener('click', function() {
-            this.innerHTML = '<i class="fas fa-sync fa-spin"></i> Refreshing...';
-            setTimeout(() => {
-                this.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh Data';
-                alert('Weather data refreshed!');
-            }, 1500);
-        });
-        
-        // Location button functionality
-        document.getElementById('location-btn').addEventListener('click', function() {
-            this.innerHTML = '<i class="fas fa-location-arrow"></i> Locating...';
-            setTimeout(() => {
-                this.innerHTML = '<i class="fas fa-location-arrow"></i> Use My Location';
-                alert('Using your location: New York, NY');
-            }, 1500);
-        });
-        
-        // Card hover effects
-        const cards = document.querySelectorAll('.card');
-        cards.forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                this.style.transform = 'scale(1.02)';
+        // Refresh interval in seconds
+        const REFRESH_SECONDS = 5;
+
+        function refreshImages() {
+            const images = document.querySelectorAll("img[data-refresh='true']");
+            images.forEach(img => {
+                const baseUrl = img.getAttribute("data-src");
+                img.src = baseUrl + "?t=" + Date.now(); // prevent caching
             });
-            
-            card.addEventListener('mouseleave', function() {
-                this.style.transform = 'scale(1)';
-            });
-        });
+        }
+
+        setInterval(refreshImages, REFRESH_SECONDS * 1000);
     </script>
-    <script src="https://kit.fontawesome.com/3cd7c5588b.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+    <div class="cam-container">
+        <img name="camimage2" data-refresh="true"
+            data-src="https://imgproxy.windy.com/_/full/plain/current/1793889370/original.jpg"
+            src="https://imgproxy.windy.com/_/full/plain/current/1793889370/original.jpg">
+    </div>
+
+    <div class="cam-container">
+        <img name="camimage4" data-refresh="true" data-src="https://www.meteo-thessalia.gr/cam/larisa/?[[date|U]]"
+            src="https://www.meteo-thessalia.gr/cam/larisa/?[[date|U]]">
+    </div>
+
+
+    <div class="cam-container">
+        <img name="camimage3" data-refresh="true"
+            data-src="https://imgproxy.windy.com/_/full/plain/current/1410001783/original.jpg"
+            src="https://imgproxy.windy.com/_/full/plain/current/1410001783/original.jpg">
+    </div>
+
+    <div class="cam-container">
+        <img name="camimage1" data-refresh="true" data-src="https://in-karystos.gr/camera/current.jpg"
+            src="https://in-karystos.gr/camera/current.jpg">
+        <img id="weather-img" class="img-fluid rounded" src="https://wttr.in/Κάρυστος_0pq_transparency=200_lang=el.png"
+            alt="Current weather in Κάρυστος">
+    </div>
+
+    <div class="cam-container">
+        <iframe allowtransparency="true" allowfullscreen="true" src="http://www.meteocam.gr/iframe.php?id=mc85"
+            scrolling="no" frameborder="0"></iframe>
+    </div>
+
 </body>
+
 </html>
