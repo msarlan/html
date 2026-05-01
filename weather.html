@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Multi Camera Viewer</title>
+
+    <style>
+        body {
+            margin: 0;
+            background: #000;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            gap: 10px;
+        }
+
+        .cam-container {
+            flex: 1 1 calc(33% - 20px);
+            /* 2 cameras per row */
+            max-width: calc(33% - 20px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            border: 2px solid #333;
+            border-radius: 4px;
+        }
+
+        @media (max-width: 900px) {
+            .cam-container {
+                flex: 1 1 90%;
+                max-width: 100%;
+            }
+        }
+
+        iframe {
+            margin-top: 130;
+        }
+    </style>
+
+    <script>
+        // Refresh interval in seconds
+        const REFRESH_SECONDS = 5;
+
+        function refreshImages() {
+            const images = document.querySelectorAll("img[data-refresh='true']");
+            images.forEach(img => {
+                const baseUrl = img.getAttribute("data-src");
+                img.src = baseUrl + "?t=" + Date.now(); // prevent caching
+            });
+        }
+
+        setInterval(refreshImages, REFRESH_SECONDS * 1000);
+    </script>
+</head>
+
+<body>
+
+    <div class="cam-container">
+        <img name="camimage2" data-refresh="true"
+            data-src="https://imgproxy.windy.com/_/full/plain/current/1793889370/original.jpg"
+            src="https://imgproxy.windy.com/_/full/plain/current/1793889370/original.jpg">
+    </div>
+
+    <div class="cam-container">
+        <img name="camimage4" data-refresh="true" data-src="https://www.meteo-thessalia.gr/cam/larisa/?[[date|U]]"
+            src="https://www.meteo-thessalia.gr/cam/larisa/?[[date|U]]">
+    </div>
+
+
+    <div class="cam-container">
+        <img name="camimage3" data-refresh="true"
+            data-src="https://imgproxy.windy.com/_/full/plain/current/1410001783/original.jpg"
+            src="https://imgproxy.windy.com/_/full/plain/current/1410001783/original.jpg">
+    </div>
+
+    <div class="cam-container">
+        <img name="camimage1" data-refresh="true" data-src="https://in-karystos.gr/camera/current.jpg"
+            src="https://in-karystos.gr/camera/current.jpg">
+        <img id="weather-img" class="img-fluid rounded" src="https://wttr.in/Κάρυστος_0pq_transparency=200_lang=el.png"
+            alt="Current weather in Κάρυστος">
+    </div>
+
+    <div class="cam-container">
+        <iframe allowtransparency="true" allowfullscreen="true" src="http://www.meteocam.gr/iframe.php?id=mc85"
+            scrolling="no" frameborder="0"></iframe>
+    </div>
+
+
+</body>
+
+</html>
